@@ -1,12 +1,4 @@
-@import url("fonts.css");
-
-* {
-  font-family: Poppins;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent !important;
-}
+@import url("default.css");
 
 body {
   background-color: #f2f2f2;

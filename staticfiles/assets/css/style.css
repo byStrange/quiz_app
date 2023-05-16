@@ -1,9 +1,5 @@
 @import url("default.css");
 
-body {
-  background-color: #f2f2f2;
-}
-
 .container {
   display: flex;
   justify-content: center;

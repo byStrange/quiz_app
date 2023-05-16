@@ -1,1 +1,36 @@
 @import url("default.css");
+
+.container {
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.container .quiz-box {
+  background: var(--light-quiz-box-background, #f7f7f7);
+  transition: 450ms;
+  overflow: hidden;
+  min-width: 400px;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+  max-height: 650px;
+}
+
+.container .quiz-box .quiz-title {
+  position: relative;
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  width: 100%;
+  padding: 10px 0;
+  box-shadow: 0px 3px 5px 1px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-box .content {
+  padding: 20px;
+  height: 100%;
+  overflow: auto;
+}

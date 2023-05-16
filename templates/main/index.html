@@ -1,3 +1,5 @@
+{% extends './base.html' %} {% block content%}
+
 <div class="row">
   <div class="col">
     <div class="card">
@@ -10,18 +12,20 @@
           </div>
         </label>
         <label for="002">
-            <div class="option">
-              <input type="radio" name="answer" id="002" />
-              <span>Andijon</span>
-            </div>
-          </label>
-          <label for="003">
-            <div class="option">
-              <input type="radio" name="answer" id="003" />
-              <span>Andijon</span>
-            </div>
-          </label>
+          <div class="option">
+            <input type="radio" name="answer" id="002" />
+            <span>Andijon</span>
+          </div>
+        </label>
+        <label for="003">
+          <div class="option">
+            <input type="radio" name="answer" id="003" />
+            <span>Andijon</span>
+          </div>
+        </label>
       </div>
     </div>
   </div>
 </div>
+
+{% endblock content%}

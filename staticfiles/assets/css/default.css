@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Poppins !important;
+}
+
+.info p {
+  margin-bottom: 0rem;
+}
+
+footer a:hover {
+  color: var(--bs-blue) !important;
+  text-decoration: underline;
+}
+
+.content img {
+  max-width: 100%;
+}

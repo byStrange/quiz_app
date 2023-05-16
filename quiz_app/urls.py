@@ -6,10 +6,10 @@ from django.conf import settings
 
 urlpatterns = [
     path("main/", include("main.urls", namespace="main")),
-    path('admin/', admin.site.urls),
+    path("settings/", include("settings.urls", namespace="main")),
+    path("admin/", admin.site.urls),
 ]
 
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL,
-                          document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

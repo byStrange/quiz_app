@@ -1,0 +1,30 @@
+{% extends './base.html' %} {% block content%}
+<div class="container">
+  <div class="quiz-box">
+    <div class="quiz-title"><span class="marked">Question</span> groups</div>
+    <div class="content">
+      <div class="answers" style="margin-bottom: 15px">
+        {% for group_type in question_groups %}
+        <a
+          href="{% url 'settings:question_group' group_type.id %}"
+          class="no-link"
+        >
+          <div class="option">{{ group_type.name }}</div>
+        </a>
+        {% endfor %}
+      </div>
+      <hr />
+      <form class="form" method="post" style="margin-top: 12px">
+        {% csrf_token%}
+        <label>Create <span class="marked">questionGroup</span></label>
+        <div class="field" style="display: flex; gap: 10px">
+          <input type="text" placeholder="Name" name="group_name" />
+          <button class="button" type="submit">
+            <span>Create</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock%}

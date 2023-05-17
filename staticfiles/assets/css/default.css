@@ -26,3 +26,7 @@ footer a:hover {
 .content img {
   max-width: 100%;
 }
+
+.no-link {
+  text-decoration: none;
+}

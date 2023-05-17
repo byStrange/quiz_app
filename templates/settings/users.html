@@ -6,13 +6,10 @@
     </div>
     <div class="content">
       <div class="answers">
-        {% for quiz_user in quiz_users %}
-        <a
-          style="text-decoration: none; color: initial"
-          class="quiz-user"
-        >
-          <div class="option" data-id="{{quiz_user.id}}">
-            <span>{{ quiz_user.name }}</span>
+        {% for user in users %}
+        <a style="text-decoration: none; color: initial" class="quiz-user">
+          <div class="option" data-id="{{user.id}}">
+            <span>{{ user.name }}</span>
           </div>
         </a>
         {%endfor%}

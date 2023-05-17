@@ -1,0 +1,53 @@
+{% extends './base.html' %} {% block content %}
+<div class="container">
+  <div class="quiz-box">
+    <div class="quiz-title">Create <span class="marked">Exam</span></div>
+    <div class="content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="field">
+          <label class="label" for="exam_name">Exams name</label>
+          <input
+            type="name"
+            name="exam_name"
+            placeholder="Your exam's title"
+            id="exam_name"
+            required
+          />
+        </div>
+        <div class="field">
+          <select multiple>
+            {% for group in groupped_questions %} {% for question in group.questions.all %}
+            <option value="{{question.id}}">{{ questions.text }}</option>
+            {% endfor %}
+            <option disabled>{{ group.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <button class="button" type="submit" style="width: 100%">
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  document
+    .querySelectorAll(":is(form) input, textarea, select, button")
+    .forEach((input) => {
+      input.addEventListener("focus", function (e) {
+        var target = document.querySelector(".quiz-box");
+        if (!target.className.includes("focused")) {
+          target.classList.add("focused");
+        }
+      });
+      input.addEventListener("focusout", function (e) {
+        var target = document.querySelector(".quiz-box");
+        target.classList.remove("focused");
+      });
+    });
+</script>
+
+{% endblock content%}

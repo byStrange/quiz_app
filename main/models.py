@@ -5,8 +5,7 @@ import uuid
 
 class BasicUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     city = models.CharField(max_length=100)
     school = models.CharField(max_length=100)
     more_details = models.TextField()
@@ -21,7 +20,8 @@ class QuestionType(models.Model):
 
 class Option(models.Model):
     text = models.CharField(max_length=100)
-    question = models.ForeignKey('Question', on_delete=models.CASCADE)
+    question = models.ForeignKey("Question", on_delete=models.CASCADE)
+    is_true = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
@@ -35,8 +35,7 @@ class Question(models.Model):
         return self.text
 
     def add_option(self, text, is_correct=False):
-        option = Option.objects.create(
-            text=text, question=self, is_correct=is_correct)
+        option = Option.objects.create(text=text, question=self, is_true=is_correct)
         return option
 
 

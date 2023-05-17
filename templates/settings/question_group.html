@@ -1,0 +1,129 @@
+{% extends './base.html' %} {% block content %}
+<div class="container">
+  <div class="quiz-box">
+    <div class="quiz-title">
+      <span class="marked">{{ question_group.name }}</span>
+    </div>
+    <div class="content">
+      <div class="answers" style="margin-bottom: 15px">
+        {% for question in question_group.questions.all %}
+        <div class="option">{{ question.text }}</div>
+        {% endfor %}
+      </div>
+      <hr />
+      <form class="form" method="post" style="margin-top: 12px">
+        {% csrf_token %}
+        <label class=""
+          >Create <span class="marked">question</span> to
+          <span class="marked">{{ question_group.name }}</span></label
+        >
+
+        <hr />
+        <div class="field mt-1">
+          <input
+            type="text"
+            placeholder="Question"
+            name="question_text"
+            class="option"
+          />
+        </div>
+        <div class="options">
+          <div class="option _">
+            <div>
+              <input type="radio" name="answer" />
+            </div>
+            <div>
+              <input
+                type="text"
+                name="option1"
+                data-sent="false"
+                placeholder="option 1"
+              />
+            </div>
+          </div>
+          <div class="option _" style="margin-top: 5px">
+            <div>
+              <input type="radio" name="answer" />
+            </div>
+            <div>
+              <input
+                type="text"
+                name="option2"
+                data-sent="false"
+                placeholder="option 2"
+              />
+            </div>
+          </div>
+          <div class="option _" style="margin-top: 5px">
+            <div>
+              <input type="radio" name="answer" />
+            </div>
+            <div>
+              <input
+                type="text"
+                name="option3"
+                data-sent="false"
+                placeholder="option 3"
+              />
+            </div>
+          </div>
+          <div class="option _" style="margin-top: 5px">
+            <div>
+              <input type="radio" name="answer" />
+            </div>
+            <div>
+              <input
+                type="text"
+                name="option4"
+                data-sent="false"
+                placeholder="option 4"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="field mt-1">
+          <button class="button" type="submit" id="submit">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  var csrf_token = document.querySelector("[name='csrfmiddlewaretoken']").value,
+    form = document.querySelector("form"),
+    URL = location.pathname;
+
+  const default_headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+    "X-CSRFToken": csrf_token,
+  };
+  form.onsubmit = function (e) {
+    e.preventDefault();
+    var options = document.querySelectorAll(".option._");
+    var question = document.querySelector("[name='question_text']");
+    var data_options = [];
+    options.forEach((option) => {
+      var opt = option.querySelector("[type='text']").value;
+      var ans = option.querySelector("[type='radio']").checked;
+      data_options.push({
+        name: opt,
+        checked: ans,
+      });
+    });
+    var data = {
+      data: {
+        name: question.value,
+        options: data_options,
+      },
+    };
+    fetch(URL, {
+      method: "POST",
+      headers: default_headers,
+      body: JSON.stringify(data),
+    });
+    console.log(data);
+  };
+</script>
+{% endblock content %}

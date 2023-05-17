@@ -67,3 +67,7 @@
 .py-4 {
   padding: 40px;
 }
+
+:is(input, textarea, button):focus {
+  outline: none !important;
+}

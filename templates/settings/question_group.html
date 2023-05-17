@@ -5,11 +5,14 @@
       <span class="marked">{{ question_group.name }}</span>
     </div>
     <div class="content">
-      <div class="answers" style="margin-bottom: 15px">
-        {% for question in question_group.questions.all %}
-        <div class="option">{{ question.text }}</div>
-        {% endfor %}
-      </div>
+      <details>
+        <summary>Questions</summary>
+        <div class="answers" style="margin-bottom: 15px">
+          {% for question in question_group.questions.all %}
+          <div class="option">{{ question.text|truncatechars:"20" }}</div>
+          {% endfor %}
+        </div>
+      </details>
       <hr />
       <form class="form" method="post" style="margin-top: 12px">
         {% csrf_token %}
@@ -99,10 +102,10 @@
     "X-Requested-With": "XMLHttpRequest",
     "X-CSRFToken": csrf_token,
   };
+  var options = document.querySelectorAll(".option._");
+  var question = document.querySelector("[name='question_text']");
   form.onsubmit = function (e) {
     e.preventDefault();
-    var options = document.querySelectorAll(".option._");
-    var question = document.querySelector("[name='question_text']");
     var data_options = [];
     options.forEach((option) => {
       var opt = option.querySelector("[type='text']").value;
@@ -112,6 +115,13 @@
         checked: ans,
       });
     });
+    var allCheckedFalse = data_options.every(
+      (obj) => obj.checked === false && obj.name !== ""
+    );
+    if (allCheckedFalse || question.value == "") {
+      alert("Data is not fully completed!");
+      return;
+    }
     var data = {
       data: {
         name: question.value,
@@ -122,7 +132,23 @@
       method: "POST",
       headers: default_headers,
       body: JSON.stringify(data),
-    });
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        var $question = res.question;
+        var option = document.createElement("option");
+        option.innerText = $question.name;
+        option.className = "option";
+        document.querySelector(".answers").appendChild(option);
+        question.value = "";
+        options.forEach(
+          (opt) => (
+            (opt.querySelector("[type='text']").value = ""),
+            (opt.querySelector("[type='radio']").checked = false)
+          )
+        );
+        question.focus();
+      });
     console.log(data);
   };
 </script>

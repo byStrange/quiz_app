@@ -17,11 +17,11 @@
         </div>
         <div class="field">
           <select multiple>
-            {% for group in groupped_questions %} {% for question in group.questions.all %}
-            <option value="{{question.id}}">{{ questions.text }}</option>
-            {% endfor %}
+            {% for group in groupped_questions %}
             <option disabled>{{ group.name }}</option>
-            {% endfor %}
+            {% for question in group.questions.all %}
+            <option value="{{ question.id }}">{{ question.text }}</option>
+            {% endfor %} {% endfor %}
           </select>
         </div>
         <div class="field">

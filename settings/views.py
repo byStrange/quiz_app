@@ -82,7 +82,7 @@ def question_group(request, pk):
 
         question_group.questions.add(question)
         question_group.save()
-        return JsonResponse({"response": options})
+        return JsonResponse({"question": {"name": question.text, "id": question.id}})
     return render(
         request, "settings/question_group.html", {"question_group": question_group}
     )

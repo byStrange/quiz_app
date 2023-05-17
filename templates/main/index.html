@@ -1,31 +1,62 @@
 {% extends './base.html' %} {% block content%}
-
 <div class="row">
-  <div class="col">
-    <div class="card">
-      <span class="title">Where are you from</span>
-      <div class="options">
-        <label for="001">
-          <div class="option">
-            <input type="radio" name="answer" id="001" />
-            <span>Andijon</span>
-          </div>
-        </label>
-        <label for="002">
-          <div class="option">
-            <input type="radio" name="answer" id="002" />
-            <span>Andijon</span>
-          </div>
-        </label>
-        <label for="003">
-          <div class="option">
-            <input type="radio" name="answer" id="003" />
-            <span>Andijon</span>
-          </div>
-        </label>
+  <form>
+    <div class="col" style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 5px">
+        <h2>{{ basic_user.user.first_name }}</h2> - <h3 class="marked">{{ basic_user.faculty }}</h3>
       </div>
+      {% for question in basic_user.exam.questions.all %}
+      <div class="card">
+        <span class="title">{{ question.text }}</span>
+        <div class="options">
+          {% for option in options %} {% if option.question == question %}
+          <label for="option{{ question.id }}-{{ option.id }}">
+            <div class="option">
+              <input
+                type="radio"
+                name="answer{{ question.id }}"
+                id="option{{ question.id }}-{{ option.id }}"
+                value="{{ option.id }}"
+              />
+              <span>{{ option.text }}</span>
+            </div>
+          </label>
+          {% endif %} {% endfor %}
+        </div>
+        {% if forloop.last %}
+        <button class="btn" type="submit">Tugatish</button>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
-  </div>
+  </form>
 </div>
+
+<script>
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Collect the selected option IDs for each question
+    const formData = new FormData(form);
+    const selectedOptions = {};
+
+    for (const [key, value] of formData.entries()) {
+      const questionId = key.replace("answer", "");
+      selectedOptions[questionId] = value;
+    }
+    fetch(`{% url 'main:exam_check' %}`, {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: selectedOptions,
+      }),
+    });
+  });
+</script>
 
 {% endblock content%}

@@ -8,6 +8,8 @@ class BasicUser(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     city = models.CharField(max_length=100)
     school = models.CharField(max_length=100)
+    faculty = models.CharField(max_length=100, default="_")
+    exam = models.ForeignKey("Exam", on_delete=models.DO_NOTHING, blank=True, null=True)
     more_details = models.TextField()
 
 

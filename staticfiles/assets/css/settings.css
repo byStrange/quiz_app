@@ -12,11 +12,9 @@
   background: var(--light-quiz-box-background, #f7f7f7);
   transition: 450ms;
   overflow: hidden;
-  min-width: 400px;
   max-width: 800px;
   border-radius: 10px;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-  max-height: 650px;
 }
 
 .container .quiz-box .quiz-title {

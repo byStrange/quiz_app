@@ -3,11 +3,13 @@
   <form>
     <div class="col" style="display: flex; flex-direction: column; gap: 10px">
       <div style="display: flex; align-items: center; gap: 5px">
-        <h2>{{ basic_user.user.first_name }}</h2> - <h3 class="marked">{{ basic_user.faculty }}</h3>
+        <h2>{{ basic_user.user.first_name }}</h2>
+        -
+        <h3 class="marked">{{ basic_user.faculty }}</h3>
       </div>
       {% for question in basic_user.exam.questions.all %}
       <div class="card">
-        <span class="title">{{ question.text }}</span>
+        <span class="title">{{forloop.counter}}. {{ question.text }}</span>
         <div class="options">
           {% for option in options %} {% if option.question == question %}
           <label for="option{{ question.id }}-{{ option.id }}">

@@ -17,6 +17,7 @@ from main.models import BasicUser, Exam, QuestionGroup, Option, Question, Result
 @csrf_exempt
 def register(request):
     if request.method == "POST":
+        print("POST REQUEST", json.load(request))
         data = json.load(request)["data"]
         name = data["full_name"]
         username = name.replace(" ", "")

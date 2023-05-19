@@ -8,7 +8,6 @@ urlpatterns = [
     path("main/", include("main.urls", namespace="main")),
     path("settings/", include("settings.urls", namespace="settings")),
     path("admin/", admin.site.urls),
-    path("bot-webhook/", include("django_telegrambot.urls")),
 ]
 
 

@@ -9,8 +9,12 @@ class BasicUser(models.Model):
     city = models.CharField(max_length=100)
     school = models.CharField(max_length=100)
     faculty = models.CharField(max_length=100, default="_")
-    exam = models.ForeignKey("Exam", on_delete=models.DO_NOTHING, blank=True, null=True)
+    exam = models.ForeignKey("Exam", on_delete=models.CASCADE, blank=True, null=True)
     more_details = models.TextField()
+    certificate = models.FileField(upload_to="certificates", blank=True, null=True)
+
+    def __str__(self):
+        return self.user.first_name
 
 
 class QuestionType(models.Model):
@@ -30,20 +34,22 @@ class Option(models.Model):
 
 
 class Question(models.Model):
+    image = models.ImageField(upload_to="media/question-images", blank=True, null=True)
     text = models.TextField()
     question_type = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.text
 
     def add_option(self, text, is_correct=False):
         option = Option.objects.create(text=text, question=self, is_true=is_correct)
         return option
 
+    def __str__(self):
+        return self.text
+
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)
-    questions = models.ManyToManyField(Question)
+    subject1_questions = models.ManyToManyField(Question, related_name="subject1_exams")
+    subject2_questions = models.ManyToManyField(Question, related_name="subject2_exams")
 
     def __str__(self):
         return self.name

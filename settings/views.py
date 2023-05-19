@@ -26,17 +26,27 @@ def users(request):
 
 
 @staff_member_required
+def user(request, pk):
+    user = BasicUser.objects.get(id=pk)
+    try:
+        result = Results.objects.get(user=user, exam=user.exam)
+    except:
+        result = {"score": "Topshirmagan"}
+    context = {"user": user, "result": result}
+
+    return render(request, "settings/user.html", context)
+
+
+@staff_member_required
 def add_exam(request):
     groupped_questions = QuestionGroup.objects.all()
     if request.method == "POST":
         data = request.POST
         name = data["exam_name"]
-        print(data)
         exam = Exam.objects.create(
             name=name,
         )
         exam.save()
-        print("successfully", exam.name, " created")
         return redirect("/settings/exams/")
     return render(
         request, "settings/add_exam.html", {"groupped_questions": groupped_questions}
@@ -46,11 +56,6 @@ def add_exam(request):
 @staff_member_required
 def exam_details(request, pk):
     exam = Exam.objects.get(pk=pk)
-    if request.method == "POST":
-        data = request.POST
-        name = data["exam_name"]
-        exam.name = name
-        exam.save()
     return render(request, "settings/exam.html", {"exam": exam})
 
 

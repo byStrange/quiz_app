@@ -9,7 +9,15 @@
       </div>
       {% for question in basic_user.exam.questions.all %}
       <div class="card">
-        <span class="title">{{forloop.counter}}. {{ question.text }}</span>
+        <div
+          style="display: flex; flex-direction: column; justify-content: start"
+        >
+          <img
+            src="{% if question.image %} {{ question.image.url }} {% endif %}"
+            width="200"
+          />
+          <span class="title">{{forloop.counter}}. {{ question.text }}</span>
+        </div>
         <div class="options">
           {% for option in options %} {% if option.question == question %}
           <label for="option{{ question.id }}-{{ option.id }}">

@@ -1,34 +1,17 @@
 {% extends './base.html' %} {% block content %}
 <div class="container">
   <div class="quiz-box">
-    <div class="quiz-title">Edit <span class="marked">Exam</span></div>
+    <div class="quiz-title">
+      <span class="marked">{{ exam.name }}</span>
+    </div>
     <div class="content">
-      <form method="POST">
-        {% csrf_token %}
-        <div class="field">
-          <label class="label" for="exam_name">Exams name</label>
-          <input
-            type="name"
-            name="exam_name"
-            placeholder="Your exam's title"
-            id="exam_name"
-            value="{{ exam.name }}"
-            required
-          />
-        </div>
-        <div class="field">
-          <select multiple>
-            {% for group in groupped_questions %}
-            <option disabled>{{ group.name }}</option>
-            {% for question in group.questions.all %}
-            <option value="{{ question.id }}">{{ question.text }}</option>
-            {% endfor %} {% endfor %}
-          </select>
-        </div>
-        <div class="field">
-          <button class="button" type="submit" style="width: 100%">Save</button>
-        </div>
-      </form>
+      <div class="answers">
+        {% for question in exam.questions.all %}
+        <a href="{% url 'admin:main_question_change' question.id %}">
+          <div class="option">{{ question.text|truncatechars:"20" }}</div>
+        </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

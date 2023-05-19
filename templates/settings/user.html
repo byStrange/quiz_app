@@ -1,0 +1,29 @@
+{% extends './base.html' %} {% block content %}
+
+<div class="container">
+  <div class="quiz-box">
+    <div class="quiz-title">
+      <span class="marked">{{ user.user.first_name}}</span>
+    </div>
+    <div class="content">
+      <p>Fakultet: <span class="marked">{{ user.faculty }}</span></p>
+      <p>
+        Imtixon:
+        <a href="{% url 'settings:exam' user.exam.id %}" class="marked"
+          >{{ user.exam.name }}</a
+        >
+      </p>
+      <p>Natija: {{ result.score }}</p>
+      <p>Tuman (shaxar): <span class="marked">{{ user.city }}</span></p>
+      <p>Maktab: <span class="marked">{{ user.school }}</span></p>
+      <p>
+        Sertifikat: {% if user.certificate %}
+        <a href="{{ user.certificate.url }}">Sertifikat</a>
+        {% else %} <span class="marked">Olmagan</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

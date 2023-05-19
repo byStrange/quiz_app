@@ -9,7 +9,9 @@
         <summary>Questions</summary>
         <div class="answers" style="margin-bottom: 15px">
           {% for question in question_group.questions.all %}
-          <div class="option">{{ question.text|truncatechars:"20" }}</div>
+          <a href="{% url 'admin:main_question_change' question.id %}">
+            <div class="option">{{ question.text|truncatechars:"20" }}</div>
+          </a>
           {% endfor %}
         </div>
       </details>

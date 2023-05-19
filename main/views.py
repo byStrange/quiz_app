@@ -53,13 +53,28 @@ def register(request):
 def login_view(request, token):
     basic_user = BasicUser.objects.get(id=token)
     user = basic_user.user
-    question_group = QuestionGroup.objects.get(name=basic_user.faculty)
+    faculty = basic_user.faculty
+    if faculty == "XF":
+        question_group_1_store = QuestionGroup.objects.get(name="English")
+        question_group_2_store = QuestionGroup.objects.get(name="MotherTongue")
+    if faculty == "TF":
+        question_group_1_store = QuestionGroup.objects.get(name="question")
     if not basic_user.exam:
         exam = Exam(name=f"Exam ({user.id})")
-        questions = random.sample(list(question_group.questions.all()), 5)
+        question_group_1 = random.sample(
+            list(question_group_1_store.questions.all()), 10
+        )
+        question_group_2 = random.sample(
+            list(question_group_2_store.questions.all()), 10
+        )
         exam.save()
-        for question in questions:
-            exam.questions.add(question)
+        for question in question_group_1:
+            exam.subject1_questions.add(question)
+        exam.save()
+
+        for question in question_group_2:
+            exam.subject2_questions.add(question)
+
         exam.save()
         basic_user.exam = exam
         basic_user.save()
@@ -79,6 +94,15 @@ def exam_view(request):
         )
 
 
+def test(request):
+    question_group = QuestionGroup.objects.get(name="Ingliz tili")
+    questions = question_group.questions.all()
+    options = Option.objects.filter(question__in=questions)
+    return render(
+        request, "main/test.html", {"questions": questions, "options": options}
+    )
+
+
 @csrf_exempt
 def exam_check(request):
     if request.method == "POST":
@@ -88,7 +112,6 @@ def exam_check(request):
         # Retrieve the questions and their corresponding correct options
         question_ids = [int(question_id) for question_id in selected_options.keys()]
         questions = Question.objects.filter(id__in=question_ids)
-        print(len(questions))
         question_option_mapping = {
             question.id: question.option_set.filter(is_true=True).first().id
             for question in questions
@@ -117,5 +140,5 @@ def exam_check(request):
 @csrf_exempt
 def exam_results(request):
     basic_user = BasicUser.objects.get(user=request.user)
-    result = Results.objects.get(user=basic_user)
+    result = Results.objects.get(user=basic_user, exam=basic_user.exam)
     return render("main/result.html", {"result": result})

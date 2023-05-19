@@ -8,5 +8,8 @@ urlpatterns = [
     path("api/login/<str:token>/", views.login_view, name="login"),
     path("exam/", views.exam_view, name="exam"),
     path("exam-check/", views.exam_check, name="exam_check"),
-    path("exam-results/", views.exam_results, name="exam_results")
+    path("exam-results/", views.exam_results, name="exam_results"),
+
+    # test
+    path("test/", views.test, name="test")
 ]

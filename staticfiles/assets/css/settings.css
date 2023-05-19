@@ -15,7 +15,7 @@
   max-width: 800px;
   border-radius: 10px;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-  min-width: 500px;
+  min-width: 300px;
 }
 
 .container .quiz-box .quiz-title {
@@ -84,15 +84,10 @@ select {
   justify-content: space-between;
 }
 
-@media screen and (max-width: 500px) {
-  .quiz-box .answers {
-    grid-template-columns: repeat(auto-fill, 100%) !important;
-  }
-}
 .quiz-box .answers {
   margin: 25px auto 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 47%);
+  grid-template-columns: repeat(auto-fill, 100%) !important;
   gap: 20px;
 }
 

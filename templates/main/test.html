@@ -1,0 +1,37 @@
+{% extends './base.html' %} {% block content%}
+<div class="row">
+  <form>
+    <div class="col" style="display: flex; flex-direction: column; gap: 10px">
+      {% for question in questions %}
+      <div class="card" style="display: flex; flex-direction: column">
+        <div style="display: flex; flex-direction: column; justify-content: start;">
+          <img
+            src="{% if question.image %} {{ question.image.url }} {% endif %}"
+            width="200"
+          />
+          <span class="title">{{forloop.counter}}. {{ question.text }}</span>
+        </div>
+        <div class="options">
+          {% for option in options %} {% if option.question == question %}
+          <label for="option{{ question.id }}-{{ option.id }}">
+            <div class="option">
+              <input
+                type="radio"
+                name="answer{{ question.id }}"
+                id="option{{ question.id }}-{{ option.id }}"
+                value="{{ option.id }}"
+              />
+              <span>{{ option.text }}</span>
+            </div>
+          </label>
+          {% endif %} {% endfor %}
+        </div>
+        {% if forloop.last %}
+        <button class="btn" type="submit">Tugatish</button>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </form>
+</div>
+{% endblock%}

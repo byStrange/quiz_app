@@ -18,7 +18,7 @@
         {% csrf_token%}
         <label>Create <span class="marked">questionGroup</span></label>
         <div class="field" style="display: flex; gap: 10px">
-          <input type="text" placeholder="Name" name="group_name" />
+          <input type="text" placeholder="Name" name="group_name" required  />
           <button class="button" type="submit">
             <span>Create</span>
           </button>

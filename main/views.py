@@ -17,8 +17,8 @@ from main.models import BasicUser, Exam, QuestionGroup, Option, Question, Result
 @csrf_exempt
 def register(request):
     if request.method == "POST":
-        print("POST REQUEST", json.load(request))
-        data = json.load(request)["data"]
+        # data = json.load(request)
+        data = json.load(request).get("data")
         name = data["full_name"]
         username = name.replace(" ", "")
         try:
@@ -51,7 +51,6 @@ def register(request):
 
 @csrf_exempt
 def login_view(request, token):
-    print(token)
     basic_user = BasicUser.objects.get(id=token)
     user = basic_user.user
     question_group = QuestionGroup.objects.get(name=basic_user.faculty)

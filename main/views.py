@@ -57,8 +57,13 @@ def login_view(request, token):
     if faculty == "XF":
         question_group_1_store = QuestionGroup.objects.get(name="English")
         question_group_2_store = QuestionGroup.objects.get(name="MotherTongue")
-    if faculty == "TF":
-        question_group_1_store = QuestionGroup.objects.get(name="question")
+    if faculty == "AFT":
+        question_group_1_store = QuestionGroup.objects.get(name="Math")
+        question_group_2_store = QuestionGroup.objects.get(name="Physics")
+    if faculty == "AFI":
+        question_group_1_store = QuestionGroup.objects.get(name="Math")
+        question_group_2_store = QuestionGroup.objects.get(name="English")
+
     if not basic_user.exam:
         exam = Exam(name=f"Exam ({user.id})")
         question_group_1 = random.sample(

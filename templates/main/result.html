@@ -1,1 +1,40 @@
-{{ score }}
+{% extends './base.html'%} {% block content %}
+<div class="container" style="flex-direction: column">
+  <div class="quiz-box">
+    <div class="quiz-title" style="font-size: 18px !important">
+      {% if passed %} 1-bosqich imtihonini <br />
+      muvaffaqiyatli topshirdingiz ✅{%else %} 1-bosqich imtihonidan o'ta
+      olmadingiz ❌{% endif %}
+    </div>
+    <div class="result-content">
+      <div class="result-row" data-count="{{ question_count }}">
+        <div class="side side-success">
+          <span> {{ result.score}} </span>
+          <span class="text-muted">To'g'ri javoblar</span>
+        </div>
+        <div class="side side-danger">
+          <span> {{incorrect}} </span>
+          <span class="text-muted">Noto'g'ri javoblar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if passed %}
+  <div
+    style="
+      margin-top: 10px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 5px;
+    "
+  >
+    <a
+      href="{% url 'main:certificate' result.user.id %}"
+      download="{{result.user.id}}"
+    >
+      Sertifikatni yuklab olish
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock content%}

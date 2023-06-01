@@ -6,8 +6,7 @@ import uuid
 class BasicUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    city = models.CharField(max_length=100)
-    school = models.CharField(max_length=100)
+    city_and_school = models.CharField(max_length=255)
     faculty = models.CharField(max_length=100, default="_")
     exam = models.ForeignKey("Exam", on_delete=models.CASCADE, blank=True, null=True)
     more_details = models.TextField()
@@ -15,7 +14,7 @@ class BasicUser(models.Model):
 
     def __str__(self):
         return self.user.first_name
-
+    
 
 class QuestionType(models.Model):
     name = models.CharField(max_length=100)

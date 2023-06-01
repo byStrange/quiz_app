@@ -9,7 +9,11 @@ urlpatterns = [
     path("exam/", views.exam_view, name="exam"),
     path("exam-check/", views.exam_check, name="exam_check"),
     path("exam-results/", views.exam_results, name="exam_results"),
-
+    path(
+        "certificate/<uuid:certificate_id>/",
+        views.certificate_pdf_view,
+        name="certificate",
+    ),
     # test
-    path("test/", views.test, name="test")
+    path("test/", views.test, name="test"),
 ]

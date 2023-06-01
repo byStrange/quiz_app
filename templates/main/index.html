@@ -1,4 +1,18 @@
 {% extends './base.html' %} {% block content%}
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']]
+    },
+    jax: ['input/TeX', 'output/HTML-CSS'],
+    "HTML-CSS": { availableFonts: ["TeX"] },
+    CommonHTML: { availableFonts: ["TeX"] }
+  });
+</script>
 <div class="row">
   <form>
     <div class="col" style="display: flex; flex-direction: column; gap: 10px">
@@ -7,7 +21,36 @@
         -
         <h3 class="marked">{{ basic_user.faculty }}</h3>
       </div>
-      {% for question in basic_user.exam.questions.all %}
+      {% for question in basic_user.exam.subject1_questions.all %}
+      <div class="card">
+        <div
+          style="display: flex; flex-direction: column; justify-content: start"
+        >
+          <img
+            src="{% if question.image %} {{ question.image.url }} {% endif %}"
+            width="200"
+          />
+          <span class="title">{{forloop.counter}}. {{ question.text }}</span>
+        </div>
+        <div class="options">
+          {% for option in options %} {% if option.question == question %}
+          <label for="option{{ question.id }}-{{ option.id }}">
+            <div class="option">
+              <input
+                type="radio"
+                name="answer{{ question.id }}"
+                id="option{{ question.id }}-{{ option.id }}"
+                value="{{ option.id }}"
+              />
+              <span>{{ option.text }}</span>
+            </div>
+          </label>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+      <hr />
+      {% for question in basic_user.exam.subject2_questions.all %}
       <div class="card">
         <div
           style="display: flex; flex-direction: column; justify-content: start"
@@ -65,7 +108,13 @@
       body: JSON.stringify({
         data: selectedOptions,
       }),
-    });
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.succeed) {
+          location.pathname = "main/exam-results";
+        }
+      });
   });
 </script>
 

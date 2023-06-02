@@ -10,7 +10,7 @@
         <div class="answers" style="margin-bottom: 15px">
           {% for question in question_group.questions.all %}
           <a href="{% url 'admin:main_question_change' question.id %}">
-            <div class="option">{{ question.text|truncatechars:"20" }}</div>
+            <div class="option">{{forloop.counter}}. {{ question.text|truncatechars:"20" }}</div>
           </a>
           {% endfor %}
         </div>

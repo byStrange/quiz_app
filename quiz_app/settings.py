@@ -106,9 +106,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "/home/rahmatulloquizapp/quiz_app/static"
 STATICFILES_DIRS = [BASE_DIR / "staticfiles"]
 
 MEDIA_URL = "media/"
+MEDIA_ROOT = "/home/rahmatulloquizapp/quiz_app/media"
 MEDIAFILES_DIRS = [BASE_DIR / "media"]
 
 # Default primary key field type

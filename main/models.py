@@ -14,7 +14,7 @@ class BasicUser(models.Model):
 
     def __str__(self):
         return self.user.first_name
-    
+
 
 class QuestionType(models.Model):
     name = models.CharField(max_length=100)

@@ -10,7 +10,7 @@ import random
 
 from main.models import BasicUser, Exam, QuestionGroup, Option, Question, Results
 
-from .functions import create_certificate
+#from .functions import create_certificate
 
 
 # Create your views here.
@@ -120,8 +120,8 @@ def exam_view(request):
         )
 
 
-def test(request):
-    question_group = QuestionGroup.objects.get(name="Math")
+def test(request, slug):
+    question_group = QuestionGroup.objects.get(name=slug)
     questions = question_group.questions.all()
     options = Option.objects.filter(question__in=questions)
     return render(

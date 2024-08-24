@@ -15,5 +15,5 @@ urlpatterns = [
         name="certificate",
     ),
     # test
-    path("test/", views.test, name="test"),
+    path("test/<str:slug>/", views.test, name="test"),
 ]

@@ -1,23 +1,119 @@
 {% extends './base.html' %} {% block content %}
-<div class="container">
-  <div class="quiz-box">
-    <div class="quiz-title">
-      <span>All <span class="marked">Students</span></span>
-    </div>
-    <div class="content">
-      <div class="answers">
-        {% for user in users %}
-        <a
-          style="text-decoration: none; color: initial"
-          href="{% url 'settings:user' user.id %}"
-        >
-          <div class="option" data-id="{{user.id}}">
-            <span>{{ user.user.first_name }}</span>
+<div class="views">
+  <div class="view view-main">
+    <div class="pages">
+      <div data-page="home" class="page navbar-fixed">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left"></div>
+            <div class="center">Students</div>
+            <div class="right"></div>
           </div>
-        </a>
-        {%endfor%}
+        </div>
+
+        <div class="page-content">
+          <div class="list-block">
+            <ul>
+              {% for user in users reversed %}
+
+              <li class="swipeout">
+                <div class="swipeout-content item-content">
+                  <div class="item-inner">
+                    <div
+                      class="item-title"
+                      style="{% if not user.city_and_school|split:','|length is 2 %} color:red !important; {%endif%}"
+                    >
+                      {{ forloop.revcounter }}. {{ user.user.first_name }}
+                    </div>
+                    <div class="item-after">{{ user.faculty }}</div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a
+                    onclick="location.href = (`{% url 'admin:main_basicuser_change' user.id %}`)"
+                    class="sw-edit bg-blue"
+                    >Edit</a
+                  >
+                  <a
+                    href="#"
+                    data-confirm="Are you sure to delete this user?"
+                    data-close-on-cancel="true"
+                    class="sw-delete bg-red"
+                    data-user-id="{{ user.id }}"
+                    >Delete</a
+                  >
+                  <a
+                    href="#"
+                    data-confirm="Are you sure to ban this user?"
+                    data-close-on-cancel="true"
+                    class="sw-ban bg-black"
+                    data-user-id="{{ user.id }}"
+                    >BAN</a
+                  >
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-{%endblock%}
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/framework7/1.4.2/js/framework7.min.js"
+></script>
+
+<script>
+  var myApp = new Framework7();
+  var $$ = Dom7;
+  $$(".sw-ban").on("click", function () {
+    var banButton = $$(this);
+    var confirmMessage = banButton.data("confirm");
+    myApp.confirm(confirmMessage, function () {
+      var userId = banButton.data("user-id");
+      fetch(`/settings/users/${userId}/ban`, {
+        method: "post",
+      })
+        .then((r) => r.json())
+        .then((response) => {
+          if (response.ok) {
+            console.log("Ok");
+          }
+        });
+    });
+  });
+  $$(".sw-delete").on("click", function () {
+    var deleteButton = $$(this);
+    var confirmMessage = deleteButton.data("confirm");
+
+    myApp.confirm(confirmMessage, function () {
+      var userId = deleteButton.data("user-id");
+      var deleteUrl = `/settings/users/${userId}/delete/`; // Replace with your actual delete URL
+      fetch(deleteUrl, {
+        method: "POST",
+      })
+        .then((data) => data.json())
+        .then((response) => {
+          if (response.succeed) {
+            myApp.swipeoutDelete(deleteButton.closest(".swipeout"));
+          }
+        });
+      // Send AJAX request to delete the item
+    });
+  });
+</script>
+{% endblock content %} {% block title %}
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/framework7/1.4.2/css/framework7.ios.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/framework7/1.4.2/css/framework7.ios.colors.min.css"
+/>
+
+<title>Settings - Users</title>
+{% endblock title %}

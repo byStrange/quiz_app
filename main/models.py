@@ -9,12 +9,13 @@ class BasicUser(models.Model):
     city_and_school = models.CharField(max_length=255)
     faculty = models.CharField(max_length=100, default="_")
     exam = models.ForeignKey("Exam", on_delete=models.CASCADE, blank=True, null=True)
-    more_details = models.TextField()
+    metrka_series = models.CharField(max_length=20, default="I-AN")
     certificate = models.FileField(upload_to="certificates", blank=True, null=True)
+    is_banned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.first_name
-    
+
 
 class QuestionType(models.Model):
     name = models.CharField(max_length=100)

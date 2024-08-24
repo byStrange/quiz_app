@@ -23,6 +23,17 @@ def register(request):
         data = json.load(request).get("data")
         name = data["full_name"]
         username = name.replace(" ", "")
+        metrka_series = data["metrka_series"].replace(" ", "").trim()
+        if BasicUser.objects.filter(metrka_series=metrka_series).exists():
+            return JsonResponse(
+                {
+                    "status": False,
+                    "error_code": "user has already passed exam",
+                    "student": {
+                        "uuid": BasicUser.objects.get(metrka_series=metrka_series).id
+                    },
+                }
+            )
 
         if not User.objects.filter(username=username).exists():
             user = User(username=username, first_name=name)
@@ -36,19 +47,23 @@ def register(request):
         city_and_school = data["city_and_school"]
         faculty = data["faculty"]
         basic_user = BasicUser(
-            user=user, faculty=faculty, city_and_school=city_and_school
+            user=user,
+            faculty=faculty,
+            city_and_school=city_and_school,
+            metrka_series=metrka_series,
         )
         basic_user.save()
         login(request, user)
         return JsonResponse(
             {
+                "status": True,
                 "student": {
                     "username": user.username,
                     "name": user.first_name,
                     "faculty": faculty,
                     "city_and_school": city_and_school,
                     "uuid": basic_user.id,
-                }
+                },
             }
         )
     else:
@@ -58,6 +73,9 @@ def register(request):
 @csrf_exempt
 def login_view(request, token):
     basic_user = BasicUser.objects.get(id=token)
+    if basic_user.results_set.exists():
+        login(request, basic_user.user)
+        return render(request, "main/index.html", {"attempts_end": True})
     user = basic_user.user
     faculty = basic_user.faculty
     if faculty == "XF":
@@ -76,35 +94,37 @@ def login_view(request, token):
         question_group_1_store = QuestionGroup.objects.get(name="Chemistry")
         question_group_2_store = QuestionGroup.objects.get(name="Biology")
 
-    if not basic_user.exam:
-        exam = Exam(name=f"Exam ({user.id})")
-        print(len(list(question_group_2_store.questions.all())))
-        print(question_group_2_store)
-        try:
-            question_group_1 = random.sample(
-                list(question_group_1_store.questions.all()), 10
-            )
-        except:
-            q1_list = list(question_group_1_store.question.all())
-            question_group_1_store = random.sample(q1_list, len(q1_list))
-        try:
-            question_group_2 = random.sample(
-                list(question_group_2_store.questions.all()), 10
-            )
-        except:
-            q2_list = list(question_group_2_store.questions.all())
-            question_group_2 = random.sample(q2_list, len(q2_list))
-        exam.save()
-        for question in question_group_1:
-            exam.subject1_questions.add(question)
-        exam.save()
+    exam = Exam(name=f"Exam ({user.id})")
+    print(exam, "new EXAMMMM")
+    try:
+        question_group_1 = random.sample(
+            list(question_group_1_store.questions.all()), 10
+        )
+        print("GOOTTTTTTTT", question_group_2_store)
+    except:
+        q1_list = list(question_group_1_store.question.all())
+        question_group_1 = random.sample(q1_list, len(q1_list))
+        print("EXWEVECEECETIPONM", question_group_1_store)
+    try:
+        question_group_2 = random.sample(
+            list(question_group_2_store.questions.all()), 10
+        )
+        print("GOOOOOOOOOOOOOOOOOT22222", question_group_2_store)
+    except:
+        q2_list = list(question_group_2_store.questions.all())
+        question_group_2 = random.sample(q2_list, len(q2_list))
+        print("EXECPPCPCPEPPPC 2", question_group_2_store)
+    exam.save()
+    for question in question_group_1:
+        exam.subject1_questions.add(question)
+    exam.save()
 
-        for question in question_group_2:
-            exam.subject2_questions.add(question)
+    for question in question_group_2:
+        exam.subject2_questions.add(question)
 
-        exam.save()
-        basic_user.exam = exam
-        basic_user.save()
+    exam.save()
+    basic_user.exam = exam
+    basic_user.save()
 
     login(request, user)
     return redirect("main:exam")
@@ -114,9 +134,19 @@ def login_view(request, token):
 def exam_view(request):
     if request.user.is_authenticated:
         basic_user = BasicUser.objects.get(user=request.user)
+        attempts_end = False
+        if basic_user.results_set.exists():
+            attempts_end = True
+
         options = Option.objects.all()
         return render(
-            request, "main/index.html", {"basic_user": basic_user, "options": options}
+            request,
+            "main/index.html",
+            {
+                "basic_user": basic_user,
+                "options": options,
+                "attempts_end": attempts_end,
+            },
         )
 
 
@@ -148,15 +178,37 @@ def exam_check(request):
         for question_id, selected_option_id in selected_options.items():
             question_id = int(question_id)
             selected_option_id = int(selected_option_id)
+
+            # Print the question and its options
+            question = Question.objects.get(id=question_id)
+            print(f"Question: {question.text}")
+            print("Options:")
+            for option in question.option_set.all():
+                print(f"- {option.text}")
+
+            # Print the correct option and the option selected by the user
+            correct_option_id = question_option_mapping.get(question_id)
+            correct_option = Option.objects.get(id=correct_option_id)
+            selected_option = Option.objects.get(id=selected_option_id)
+            print(f"Correct Option: {correct_option.text}")
+            print(f"Selected Option: {selected_option.text}")
+
+            # Check if the selected option is correct and update the score
             if (
                 question_id in question_option_mapping
                 and selected_option_id == question_option_mapping[question_id]
             ):
                 score += 1
+        if basic_user.results_set.exists():
+            return JsonResponse({"succeed": False})
+        else:
+            result = Results(user=basic_user, exam=basic_user.exam, score=score)
+            result.save()
 
-        result = Results(user=basic_user, exam=basic_user.exam, score=score)
-        result.save()
-        # Render the result page with the score
+        # Print the final score
+        print(f"Score: {score}")
+
+        # Return the response
         return JsonResponse({"succeed": True})
 
     # Handle GET request or other cases
@@ -165,8 +217,9 @@ def exam_check(request):
 
 @csrf_exempt
 def exam_results(request):
+    print(request.user)
     basic_user = BasicUser.objects.get(user=request.user)
-    results = Results.objects.filter().order_by("-id")
+    results = Results.objects.filter(user=basic_user).order_by("-id")
     result = results.first()
     result_questions_count = (
         result.exam.subject1_questions.count() + result.exam.subject2_questions.count()
@@ -176,22 +229,30 @@ def exam_results(request):
     city_and_school = basic_user.city_and_school.split(
         ","
     )  # "Andijon, 23-umuiny o'rta talim"
-    city = city_and_school[0]
-    school = city_and_school[1]
+    filled_data_wrong = False
 
-    student = {
-        "name": basic_user.user.first_name,
-        "uuid": basic_user.id,
-        "city": city,
-        "school": school,
-        "id": str(basic_user.user.id),
-    }
-    print(percentage)
     if percentage >= 60:
         passed = True
-        create_certificate(student)
+        try:
+            city = city_and_school[0]
+            school = city_and_school[1]
+            student = {
+                "name": basic_user.user.first_name,
+                "uuid": basic_user.id,
+                "city": city,
+                "school": school,
+                "id": str(basic_user.user.id),
+            }
+        except:
+            filled_data_wrong = True
+
+        if not filled_data_wrong:
+            create_certificate(student)
 
     incorrect = result_questions_count - result.score
+    attempts_end = False
+    if basic_user.results_set.exists():
+        attempts_end = True
     return render(
         request,
         "main/result.html",
@@ -200,16 +261,23 @@ def exam_results(request):
             "question_count": result_questions_count,
             "incorrect": incorrect,
             "passed": passed,
+            "attempts_end": attempts_end,
+            "filled_data_wrong": filled_data_wrong,
         },
     )
 
 
 def certificate_pdf_view(request, certificate_id):
     # Construct the file path based on the certificate_id and the folder location
-    file_path = os.path.join("media", "certificate", f"{certificate_id}.pdf")
+    try:
+        file_path = os.path.join("media", "certificate", f"{certificate_id}.pdf")
 
-    # Open the PDF file in binary mode
-    with open(file_path, "rb") as f:
-        response = HttpResponse(f.read(), content_type="application/pdf")
+        # Open the PDF file in binary mode
+        with open(file_path, "rb") as f:
+            response = HttpResponse(f.read(), content_type="application/pdf")
 
+        # Set the filename in the Content-Disposition header
+        response["Content-Disposition"] = f'attachment; filename="{certificate_id}.pdf"'
+    except:
+        response = HttpResponse("there is no certificate for this user")
     return response

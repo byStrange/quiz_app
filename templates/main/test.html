@@ -1,18 +1,19 @@
 {% extends './base.html' %} {% block content%}
-<script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-></script>
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     tex2jax: {
       inlineMath: [['$','$'], ['\\(','\\)']]
     },
     jax: ['input/TeX', 'output/HTML-CSS'],
-    "HTML-CSS": { availableFonts: ["TeX"] },
     CommonHTML: { availableFonts: ["TeX"] }
   });
 </script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
 <div class="row">
   <form>
     <div class="col" style="display: flex; flex-direction: column; gap: 10px">

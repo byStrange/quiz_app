@@ -1,0 +1,38 @@
+{% extends './base.html' %} {% load static %} {% block content %}
+<link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+
+<div class="container">
+  <div class="quiz-box">
+    <div class="quiz-title">
+      <span>Passed Users</span>
+    </div>
+    <div class="content">
+      <table class="table table-bordered">
+        <thead>
+          <tr class="table-secondary">
+            <th scope="col">#</th>
+            <th scope="col">F.I.SH</th>
+            <th scope="col">Maktab</th>
+            <th scope="col">Natija</th>
+            <th scope="col">Sertifikat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in results %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ result.user.user.first_name }}</td>
+            <td>{{ result.user.city_and_school }}</td>
+            <td>{{ result.score}}/20</td>
+            <td>
+              <a href="/main/certificate/{{ result.user.id }}">sertifikat</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

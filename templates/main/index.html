@@ -13,6 +13,7 @@
     CommonHTML: { availableFonts: ["TeX"] }
   });
 </script>
+{% if not attempts_end and not passed %}
 <div class="row">
   <form>
     <div class="col" style="display: flex; flex-direction: column; gap: 10px">
@@ -76,20 +77,87 @@
           </label>
           {% endif %} {% endfor %}
         </div>
-        {% if forloop.last %}
-        <button class="btn" type="submit">Tugatish</button>
-        {% endif %}
+        {% if forloop.last %} {% if basic_user.is_banned %} hehe men senga nima
+        inspectni o'rganvolib o'zizcha {% else %}
+        <button class="btn" type="submit" id="submitBtn">Tugatish</button>
+        {% endif %} {% endif %}
       </div>
       {% endfor %}
     </div>
   </form>
 </div>
-
+<div
+  class="{% if not basic_user.is_banned%}hidden{% else %}{% endif %}glass container"
+  id="bannedContainer"
+>
+  <div class="modal">
+    <div class="card" style="max-width: 500px">
+      <p>
+        Sizning akkauntingiz adminlar tomonidan bloklangan! Bunga quyidagilardan
+        biri sabab bo'lishi mumkin
+      </p>
+      <ul class="mt-2" style="margin-left: 15px">
+        <li>Bir xil ism familiya ostida ko'plab ro'yxatdan o'tish</li>
+        <li>Metrka yoki passport seriyasi mutlaqo xato</li>
+        <li>Ism familiyangiz mutlaqo xato</li>
+      </ul>
+      <p class="mt-2" style="font-size: 12px; color: gray">
+        Agarda siz o'zingizni bu qoidalarni buzmagan deb hisoblasangiz. Bizga
+        telegramdan murojat qilishingiz mumkin
+      </p>
+    </div>
+  </div>
+</div>
+<style>
+  .hidden {
+    display: none !important;
+  }
+  .glass.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    position: fixed;
+    margin-top: 0px !important;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(35px);
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+{% else %}
+<div class="row">
+  <div class="card">
+    <p>
+      Sizda qayta urinish imkoniyati qolmadi. Yok siz allaqachon imti
+      Natijalarni ushbu
+      <a href="{%  url 'main:exam_results' %}">havola</a>ga o'tish orqali
+      ko'rishingiz mumkin
+    </p>
+  </div>
+</div>
+{% endif %}
 <script>
-  const form = document.querySelector("form");
+  var interval = setInterval(function () {
+    {% comment %} fetch("{% url 'settings:ban_user' basic_user.id %}") {% endcomment %}
+      .then((r) => r.json())
+      .then((response) => {
+        var bannedContainer = document.querySelector("#bannedContainer");
+        if (response.is_banned) {
+          bannedContainer.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+          clearInterval(interval);
+        }
+      });
+  }, 5000);
+  const form = document.querySelector("form"),
+    submitBtn = document.querySelector("#submitBtn");
 
   form.addEventListener("submit", (event) => {
     event.preventDefault(); // Prevent the default form submission
+    submitBtn.disabled = true;
 
     // Collect the selected option IDs for each question
     const formData = new FormData(form);

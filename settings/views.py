@@ -1,8 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
-from main.models import Exam, BasicUser, Results, Question, QuestionGroup, QuestionType
 from django.http import JsonResponse
+from django.template.defaulttags import register
+from django.views.decorators.csrf import csrf_exempt
+
 import json
+
+from main.models import Exam, BasicUser, Results, Question, QuestionGroup, QuestionType
+
+
+@register.filter(name="split")
+def split(value, key):
+    value.split("key")
+    return value.split(key)
 
 
 # Create your views here.
@@ -25,9 +35,20 @@ def users(request):
     return render(request, "settings/users.html", context)
 
 
+@csrf_exempt
+def ban_user(request, uuid):
+    user = BasicUser.objects.get(id=uuid)
+    if request.method == "POST":
+        user.is_banned = True
+        user.save()
+        return JsonResponse({"ok": True})
+    return JsonResponse({"is_banned": user.is_banned})
+
+
 @staff_member_required
-def user(request, pk):
-    user = BasicUser.objects.get(id=pk)
+@csrf_exempt
+def user(request, uuid):
+    user = BasicUser.objects.get(id=uuid)
     try:
         result = Results.objects.get(user=user, exam=user.exam)
     except:
@@ -91,3 +112,13 @@ def question_group(request, pk):
     return render(
         request, "settings/question_group.html", {"question_group": question_group}
     )
+
+
+@staff_member_required
+def passed_users(request):
+    passed_users = []
+    results = Results.objects.all()
+    for result in results:
+        if result.score >= 12:
+            passed_users.append(result)
+    return render(request, "settings/passed_users.html", {"results": passed_users})

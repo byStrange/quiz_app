@@ -8,19 +8,20 @@
     <div class="content">
       <p>Fakultet: <span class="marked">{{ user.faculty }}</span></p>
       <p>
-        Imtixon:
+        Imtixon: {% if user.exam %}
         <a href="{% url 'settings:exam' user.exam.id %}" class="marked"
           >{{ user.exam.name }}</a
         >
+        {% else %} Yo'q {% endif%}
       </p>
       <p>Natija: {{ result.score }}</p>
-      <p>Tuman (shaxar): <span class="marked">{{ user.city }}</span></p>
-      <p>Maktab: <span class="marked">{{ user.school }}</span></p>
       <p>
-        Sertifikat: {% if user.certificate %}
-        <a href="{{ user.certificate.url }}">Sertifikat</a>
-        {% else %} <span class="marked">Olmagan</span>
-        {% endif %}
+        Tuman (shaxar) va maktab:
+        <span class="marked">{{ user.city_and_school }}</span>
+      </p>
+      <p>
+        Sertifikat:
+        <a href="/main/certificate/{{ result.user.id }}">Sertifikat</a>
       </p>
     </div>
   </div>

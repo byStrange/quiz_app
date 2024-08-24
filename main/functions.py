@@ -9,7 +9,6 @@ certificate_image_path = (
     "/home/rakhmatullo/Documents/Github/Lyceum/quiz_app/media/certificate.png"
 )
 certificate_image = Image.open(certificate_image_path)
-
 # Create a new image with the same dimensions as the certificate image
 certificate_with_content = Image.new("RGB", certificate_image.size)
 

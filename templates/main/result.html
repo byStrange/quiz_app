@@ -1,4 +1,31 @@
 {% extends './base.html'%} {% block content %}
+<div
+  class="{% if not basic_user.is_banned%}hidden{% else %}{% endif %}glass container"
+  id="bannedContainer"
+>
+  <div class="modal">
+    <div class="card">You MF are banned</div>
+  </div>
+</div>
+<style>
+  .hidden {
+    display: none !important;
+  }
+  .glass.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    position: fixed;
+    margin-top: 0px !important;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(35px);
+    align-items: center;
+    justify-content: center;
+  }
+</style>
 <div class="container" style="flex-direction: column">
   <div class="quiz-box">
     <div class="quiz-title" style="font-size: 18px !important">
@@ -9,11 +36,11 @@
     <div class="result-content">
       <div class="result-row" data-count="{{ question_count }}">
         <div class="side side-success">
-          <span> {{ result.score}} </span>
+          <span> {{ result.score }} </span>
           <span class="text-muted">To'g'ri javoblar</span>
         </div>
         <div class="side side-danger">
-          <span> {{incorrect}} </span>
+          <span> {{ question_count}} </span>
           <span class="text-muted">Noto'g'ri javoblar</span>
         </div>
       </div>
@@ -28,13 +55,30 @@
       border-radius: 5px;
     "
   >
-    <a
-      href="{% url 'main:certificate' result.user.id %}"
-      download="{{result.user.id}}"
-    >
+    {% if filled_data_wrong %}
+    <p>
+      Sizning botdan ro'yxatdan o'tayotganda kiritgan ma'lumotlaringiz xato ga
+      o'xshaydi. Sertifikat yaratishda muammo yuzaga keldi. 10 daqiqada ushbu
+      sahifani qayta yangilang yoki ushbu
+      <a href="/main/exam-results/">havolani</a> oching
+    </p>
+    {% else %}
+    <a href="{% url 'main:certificate' result.user.id %}">
       Sertifikatni yuklab olish
     </a>
+    {% endif %}
   </div>
-  {% endif %}
+  {% else %} {% if not attempts_end%}
+  <div
+    style="
+      margin-top: 10px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 5px;
+    "
+  >
+    <a href="{% url 'main:login' result.user.id %}"> Qayta topshirish </a>
+  </div>
+  {% endif %} {% endif %}
 </div>
 {% endblock content%}

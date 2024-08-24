@@ -51,12 +51,6 @@ form {
   font-size: 16px;
 }
 
-@media screen and (max-width: 600px) {
-  .card .title span {
-    font-size: 12px;
-  }
-}
-
 .card.error {
   border-color: rgba(255, 0, 0, 0.131) !important;
 }
@@ -392,4 +386,8 @@ input[type="password"] {
   .quiz-box .quiz-title {
     font-size: 30px !important;
   }
+}
+
+button:disabled {
+  opacity: 0.8;
 }
